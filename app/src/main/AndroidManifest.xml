@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2006 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!--
+ Copyright (C) 2006 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -12,15 +13,15 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.callverify.dialer"
-    coreApp="true">
+    coreApp="true"
+    package="com.callverify.dialer">
 
     <uses-sdk
         android:minSdkVersion="23"
         android:targetSdkVersion="23" />
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
@@ -53,46 +54,50 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!-- This tells the activity manager to not delay any of our activity
+    <!--
+     This tells the activity manager to not delay any of our activity
      start requests, even if they happen immediately after the user
-     presses home. -->
+     presses home.
+    -->
     <uses-permission android:name="android.permission.STOP_APP_SWITCHES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name="com.callverify.dialer.DialerApplication"
-        android:label="@string/applicationLabel"
-        android:icon="@mipmap/ic_launcher_phone"
+        android:name=".DialerApplication"
+        android:backupAgent=".DialerBackupAgent"
         android:hardwareAccelerated="true"
-        android:supportsRtl="true"
-        android:backupAgent='com.callverify.dialer.DialerBackupAgent'>
-        <!--         android:usesCleartextTraffic="false"> remove by genius-->
+        android:icon="@mipmap/ic_launcher_phone"
+        android:label="@string/applicationLabel"
+        android:supportsRtl="true">
+
+        <!-- android:usesCleartextTraffic="false"> remove by genius -->
 
         <meta-data
             android:name="com.google.android.backup.api_key"
             android:value="AEdPqrEAAAAIBXgtCEKQ6W0PXVnW-ZVia2KmlV2AxsTw3GjAeQ" />
-
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="57a0a07167e58ef73a001dd6"></meta-data>
+            android:value="57a0a07167e58ef73a001dd6" />
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="Umeng"></meta-data>
+            android:value="Umeng" />
 
-
-        <!-- The entrance point for Phone UI.
+        <!--
+             The entrance point for Phone UI.
              stateAlwaysHidden is set to suppress keyboard show up on
-             dialpad screen. -->
+             dialpad screen.
+        -->
         <activity
-            android:name="com.callverify.dialer.DialtactsActivity"
-            android:label="@string/launcherActivityLabel"
-            android:theme="@style/DialtactsActivityTheme"
-            android:launchMode="singleTask"
+            android:name=".DialtactsActivity"
             android:clearTaskOnLaunch="true"
-            android:icon="@mipmap/ic_launcher_phone"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing"
-            android:resizeableActivity="true"
+            android:directBootAware="true"
             android:exported="true"
-            android:directBootAware="true">
+            android:icon="@mipmap/ic_launcher_phone"
+            android:label="@string/launcherActivityLabel"
+            android:launchMode="singleTask"
+            android:resizeableActivity="true"
+            android:theme="@style/DialtactsActivityTheme"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.DIAL" />
 
@@ -112,6 +117,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.DIAL" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
@@ -144,8 +150,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
-            <!-- This was never intended to be public, but is here for backward
-                 compatibility.  Use Intent.ACTION_DIAL instead. -->
+            <!--
+                 This was never intended to be public, but is here for backward
+                 compatibility.  Use Intent.ACTION_DIAL instead.
+            -->
             <intent-filter>
                 <action android:name="com.android.phone.action.TOUCH_DIALER" />
 
@@ -162,52 +170,59 @@
             <meta-data
                 android:name="com.android.keyguard.layout"
                 android:resource="@layout/keyguard_preview" />
-        </activity>
+        </activity> <!-- Backwards compatibility: "Call log" from ICS -->
+        <activity-alias
+            android:name=".activities.CallLogActivity"
+            android:exported="true"
+            android:targetActivity=".DialtactsActivity" /> <!-- Backwards compatibility: "Call log" from Gingerbread and earlier -->
+        <activity-alias
+            android:name=".RecentCallsListActivity"
+            android:exported="true"
+            android:targetActivity=".DialtactsActivity" /> <!-- Backwards compatibility: "Phone" from Gingerbread and earlier -->
+        <activity-alias
+            android:name=".DialtactsActivity"
+            android:exported="true"
+            android:targetActivity=".DialtactsActivity" />
 
-        <!--add by geniusgithub -->
+        <!-- add by geniusgithub -->
         <activity
-            android:name="com.callverify.dialer.ForceRequestPermissionsActivity"
-            android:theme="@style/android:Theme.Material.Light"
-            android:configChanges="orientation|keyboardHidden|screenSize"></activity>
-
+            android:name=".ForceRequestPermissionsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/android:Theme.Material.Light" />
         <activity
-            android:name="com.callverify.dialer.settings.DialerSettingsActivity"
+            android:name=".settings.DialerSettingsActivity"
+            android:exported="false"
             android:label="@string/dialer_settings_label"
-            android:parentActivityName="com.callverify.dialer.DialtactsActivity"
-            android:theme="@style/SettingsStyle"
-            android:exported="false"></activity>
-
+            android:parentActivityName=".DialtactsActivity"
+            android:theme="@style/SettingsStyle" />
         <activity
-            android:name="com.callverify.dialer.filterednumber.BlockedNumbersSettingsActivity"
+            android:name=".filterednumber.BlockedNumbersSettingsActivity"
+            android:exported="false"
             android:label="@string/manage_blocked_numbers_label"
-            android:parentActivityName="com.callverify.dialer.settings.DialerSettingsActivity"
-            android:theme="@style/ManageBlockedNumbersStyle"
-            android:exported="false"></activity>
-
+            android:parentActivityName=".settings.DialerSettingsActivity"
+            android:theme="@style/ManageBlockedNumbersStyle" />
         <activity
-            android:name="com.callverify.dialer.voicemail.VoicemailArchiveActivity"
+            android:name=".voicemail.VoicemailArchiveActivity"
             android:label="@string/voicemail_archive_activity_title"
-            android:theme="@style/DialtactsThemeWithoutActionBarOverlay"></activity>
-
+            android:theme="@style/DialtactsThemeWithoutActionBarOverlay" />
         <activity
-            android:name="com.callverify.dialer.calllog.CallLogActivity"
+            android:name=".calllog.CallLogActivity"
+            android:icon="@mipmap/ic_launcher_phone"
             android:label="@string/call_log_activity_title"
-            android:theme="@style/DialtactsThemeWithoutActionBarOverlay"
-            android:icon="@mipmap/ic_launcher_phone"></activity>
-
+            android:theme="@style/DialtactsThemeWithoutActionBarOverlay" />
         <activity
-            android:name="com.callverify.dialer.CallDetailActivity"
+            android:name=".CallDetailActivity"
+            android:icon="@mipmap/ic_launcher_phone"
             android:label="@string/callDetailTitle"
-            android:theme="@style/CallDetailActivityTheme"
-            android:icon="@mipmap/ic_launcher_phone">
+            android:theme="@style/CallDetailActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="vnd.android.cursor.item/calls" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name="com.callverify.contacts.common.dialog.CallSubjectDialog"
             android:theme="@style/Theme.CallSubjectDialogTheme"
@@ -216,24 +231,6 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-
-        <!-- Backwards compatibility: "Phone" from Gingerbread and earlier -->
-        <activity-alias
-            android:name="DialtactsActivity"
-            android:targetActivity="com.callverify.dialer.DialtactsActivity"
-            android:exported="true" />
-
-        <!-- Backwards compatibility: "Call log" from Gingerbread and earlier -->
-        <activity-alias
-            android:name="RecentCallsListActivity"
-            android:targetActivity="com.callverify.dialer.DialtactsActivity"
-            android:exported="true" />
-
-        <!-- Backwards compatibility: "Call log" from ICS -->
-        <activity-alias
-            android:name=".activities.CallLogActivity"
-            android:targetActivity="com.callverify.dialer.DialtactsActivity"
-            android:exported="true" />
 
         <!-- Used to filter contacts list by account -->
         <activity
@@ -246,36 +243,30 @@
             android:name="com.callverify.contacts.common.list.CustomContactListFilterActivity"
             android:label="@string/custom_list_filter"
             android:theme="@style/ContactListFilterTheme" />
-
         <activity
             android:name="com.callverify.contacts.common.activity.RequestImportVCardPermissionsActivity"
+            android:exported="false"
             android:label="@string/launcherActivityLabel"
-            android:theme="@style/BackgroundOnlyTheme"
-            android:exported="false" />
+            android:theme="@style/BackgroundOnlyTheme" />
 
         <!-- vCard related -->
         <activity
             android:name="com.callverify.contacts.common.vcard.ImportVCardActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:theme="@style/BackgroundOnlyTheme"></activity>
-
+            android:theme="@style/BackgroundOnlyTheme" />
         <activity
             android:name="com.callverify.contacts.common.vcard.NfcImportVCardActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:theme="@style/BackgroundOnlyTheme"></activity>
-
+            android:theme="@style/BackgroundOnlyTheme" />
         <activity
             android:name="com.callverify.contacts.common.vcard.CancelActivity"
             android:theme="@style/BackgroundOnlyTheme" />
-
         <activity
             android:name="com.callverify.contacts.common.vcard.SelectAccountActivity"
             android:theme="@style/BackgroundOnlyTheme" />
-
         <activity
             android:name="com.callverify.contacts.common.vcard.ExportVCardActivity"
             android:theme="@style/BackgroundOnlyTheme" />
-
         <activity
             android:name="com.callverify.contacts.common.vcard.ShareVCardActivity"
             android:theme="@style/BackgroundOnlyTheme" />
@@ -285,32 +276,32 @@
             android:exported="false" />
         <!-- end vCard related -->
 
-        <receiver android:name="com.callverify.dialer.calllog.CallLogReceiver">
+        <receiver android:name=".calllog.CallLogReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.NEW_VOICEMAIL" />
+
                 <data
-                    android:scheme="content"
                     android:host="com.android.voicemail"
-                    android:mimeType="vnd.android.cursor.item/voicemail" />
+                    android:mimeType="vnd.android.cursor.item/voicemail"
+                    android:scheme="content" />
             </intent-filter>
             <intent-filter android:priority="100">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
-        <receiver android:name="com.callverify.dialer.interactions.UndemoteOutgoingCallReceiver">
+        <receiver android:name=".interactions.UndemoteOutgoingCallReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name="com.callverify.dialer.calllog.CallLogNotificationsService"
+            android:name=".calllog.CallLogNotificationsService"
             android:directBootAware="true"
             android:exported="false" />
 
         <receiver
-            android:name="com.callverify.dialer.calllog.MissedCallNotificationReceiver"
+            android:name=".calllog.MissedCallNotificationReceiver"
             android:directBootAware="true">
             <intent-filter>
                 <action android:name="android.telecom.action.SHOW_MISSED_CALLS_NOTIFICATION" />
@@ -319,7 +310,7 @@
 
         <!-- Service to update a contact -->
         <service
-            android:name="com.callverify.dialer.contact.ContactUpdateService"
+            android:name=".contact.ContactUpdateService"
             android:exported="false" />
 
         <!-- Broadcast receiver that passively listens to location updates -->
@@ -330,26 +321,28 @@
             android:name="com.callverify.contacts.common.location.UpdateCountryService"
             android:exported="false" />
 
-        <!-- Main in-call UI activity.  This is never launched directly
+        <!--
+             Main in-call UI activity.  This is never launched directly
              from outside the phone app; instead, it's either launched by
              the OutgoingCallBroadcaster (for outgoing calls), or as the
-             fullScreenIntent of a notification (for incoming calls.) -->
+             fullScreenIntent of a notification (for incoming calls.)
+        -->
         <activity
             android:name="com.callverify.incallui.InCallActivity"
-            android:theme="@style/Theme.InCallScreen"
-            android:label="Phone"
-            android:excludeFromRecents="true"
-            android:launchMode="singleInstance"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboardHidden"
-            android:exported="false"
-            android:screenOrientation="nosensor"
             android:directBootAware="true"
-            android:resizeableActivity="true"></activity>
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:label="Phone"
+            android:launchMode="singleInstance"
+            android:resizeableActivity="true"
+            android:screenOrientation="nosensor"
+            android:theme="@style/Theme.InCallScreen" />
 
         <service
             android:name="com.callverify.incallui.InCallServiceImpl"
-            android:permission="android.permission.BIND_INCALL_SERVICE"
-            android:directBootAware="true">
+            android:directBootAware="true"
+            android:permission="android.permission.BIND_INCALL_SERVICE">
             <meta-data
                 android:name="android.telecom.IN_CALL_SERVICE_UI"
                 android:value="true" />
@@ -368,21 +361,20 @@
             android:exported="false" />
 
         <provider
-            android:name="com.callverify.dialer.database.FilteredNumberProvider"
+            android:name=".database.FilteredNumberProvider"
             android:authorities=".database.filterednumberprovider"
             android:exported="false"
             android:multiprocess="false" />
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="@string/contacts_file_provider_authority"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <!--&lt;!&ndash;This part is inside the application&ndash;&gt;-->
+        <!-- &lt;!&ndash;This part is inside the application&ndash;&gt; -->
         <receiver android:name="com.callverify.incallui.PhonecallReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
@@ -393,9 +385,18 @@
         </receiver>
 
         <provider
-            android:name="com.callverify.dialer.database.VoicemailArchiveProvider"
+            android:name=".database.VoicemailArchiveProvider"
             android:authorities=".database.voicemailarchiveprovider"
             android:exported="false"
             android:multiprocess="false" />
+
+        <receiver android:name=".NetworkReceiver"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="com.callverify.network"/>
+            </intent-filter>
+        </receiver>
     </application>
+
 </manifest>
